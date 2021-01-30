@@ -1,4 +1,4 @@
-## iCalFeed
+## iCal Integration
 
 ERPNext App for iCal Feed
 
