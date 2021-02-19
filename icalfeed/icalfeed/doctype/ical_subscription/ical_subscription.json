@@ -1,0 +1,49 @@
+{
+ "actions": [],
+ "autoname": "field:secret",
+ "creation": "2021-02-19 12:43:28.172115",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "secret",
+  "documents"
+ ],
+ "fields": [
+  {
+   "fieldname": "secret",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Secret",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "documents",
+   "fieldtype": "Table",
+   "label": "Documents",
+   "options": "iCal Subscription Documents"
+  }
+ ],
+ "links": [],
+ "modified": "2021-02-19 16:30:28.704761",
+ "modified_by": "Administrator",
+ "module": "iCalFeed",
+ "name": "iCal Subscription",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

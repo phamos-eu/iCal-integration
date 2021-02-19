@@ -10,37 +10,39 @@ from icalendar import Calendar, Event
 from datetime import datetime
 import frappe
 
-def get_calendar(secret,doctype=None):
+def get_calendar(secret):
 	# check access
-	enabled = frappe.db.get_value("iCal Feed Settings", "iCal Feed Settings", "enabled")
-	if float(enabled) == 0:
+	ical_sub = frappe.db.sql('''select
+						secret
+					from
+						`tabiCal Subscription`
+					where
+						name = %s
+					''', (secret))
+	if not ical_sub:
 		return
-	erp_secret = frappe.db.get_value("iCal Feed Settings", "iCal Feed Settings", "secret")
-	if not secret == erp_secret:
-		return
-
 	# initialise calendar
 	cal = Calendar()
 
 	# set properties
 	cal.add('prodid', '-//iCalFeed module//libracore//')
 	cal.add('version', '2.0')
-
 	#doctype is passed as an argument
-	if doctype:
-		events = frappe.db.sql('''select
-						*
-					from
-						`tabEvent` 
-					where event_type = 'Public'
-					and name in (select parent from `tabEvent Participants` where reference_doctype = %s)''',(doctype), as_dict=1)
-	else:
-		events = frappe.db.sql('''select
-						*
-					from
-						`tabEvent`
-					where event_type = 'Public'
-					''', as_dict=1)
+	event_sub_list = frappe.db.sql('''select
+								doctype_name
+							from
+								`tabiCal Subscription Documents`
+							where
+								parent = %s''',(secret), as_dict=1)
+
+	events = frappe.db.sql('''select
+					*
+				from
+					`tabEvent` 
+				where
+					event_type = 'Public' and name in (select parent from `tabEvent Participants` 
+					where reference_doctype in (%s))'''%
+					', '.join(['%s']*len(event_sub_list)), tuple([eve_sub.doctype_name for eve_sub in event_sub_list]), as_dict=1)
 
 	# add events
 	for erp_event in events:
@@ -57,9 +59,9 @@ def get_calendar(secret,doctype=None):
 	return cal
 
 @frappe.whitelist(allow_guest=True)
-def download_calendar(secret,doctype):
+def download_calendar(secret):
 	frappe.local.response.filename = "calendar.ics"
-	calendar = get_calendar(secret, doctype)
+	calendar = get_calendar(secret)
 	if calendar:
 		frappe.local.response.filecontent = calendar.to_ical()
 	else:
