@@ -3,7 +3,7 @@
 # For license information, please see license.txt
 #
 # call the API from
-#   /api/method/icalfeed.icalfeed.utils.calendar.download_calendar?secret=[secret]?doctype=['DocType']
+#   /api/method/icalfeed.icalfeed.utils.calendar.download_calendar?secret=[secret]
 #
 
 from icalendar import Calendar, Event
@@ -35,15 +35,20 @@ def get_calendar(secret):
 							where
 								parent = %s''',(secret), as_dict=1)
 
-	events = frappe.db.sql('''select
-					*
-				from
-					`tabEvent` 
-				where
-					event_type = 'Public' and name in (select parent from `tabEvent Participants` 
-					where reference_doctype in (%s))'''%
-					', '.join(['%s']*len(event_sub_list)), tuple([eve_sub.doctype_name for eve_sub in event_sub_list]), as_dict=1)
-
+	if event_sub_list:
+		events = frappe.db.sql('''select
+						*
+					from
+						`tabEvent` 
+					where
+						event_type = 'Public' and name in (select parent from `tabEvent Participants` 
+						where reference_doctype in (%s))'''%
+						', '.join(['%s']*len(event_sub_list)), tuple([eve_sub.doctype_name for eve_sub in event_sub_list]), as_dict=1)
+	else:
+		events = frappe.db.sql('''select
+						*
+					from
+						`tabEvent` ''', as_dict=1)
 	# add events
 	for erp_event in events:
 		event = Event()
@@ -55,7 +60,6 @@ def get_calendar(secret):
 		event.add('description', erp_event['description'])
 		# add to calendar
 		cal.add_component(event)
-
 	return cal
 
 @frappe.whitelist(allow_guest=True)
