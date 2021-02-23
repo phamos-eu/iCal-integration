@@ -20,7 +20,7 @@ def get_calendar(secret):
 							from
 								`tabiCal Subscription Documents`
 							where
-								`parent` = %s""",(secret), as_dict=1,debug=1)
+								parent = %s""",(secret), as_dict=1)
 
 	if event_sub_list:
 		events = frappe.db.sql('''select
