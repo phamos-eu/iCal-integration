@@ -28,7 +28,7 @@ def get_calendar(secret):
 					from
 						`tabEvent` 
 					where
-						event_type = 'Public' and name in (select parent from `tabEvent Participants` 
+						name in (select parent from `tabEvent Participants` 
 						where reference_doctype in (%s))'''%
 						', '.join(['%s']*len(event_sub_list)), tuple([eve_sub.doctype_name for eve_sub in event_sub_list]), as_dict=1)
 	else:
