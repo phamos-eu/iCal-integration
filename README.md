@@ -8,7 +8,8 @@ This app lets you easily subscribe to an iCal feed originating from your frappe 
 
 ## Setup
 ### Server Side
-Bevor beeing able to use the app you will need to install a iCal library on your server.
+For being able to use the app you will need to install a iCal library on your server. To install the iCal library you would
+need to go to your frappe-bench directory and install iCalendar using ```./env/bin/pip install icalendar```
 
 Once installed you need to open iCal Feed Settings DocType via the flobal search on your instance. There you can activate the funktionality and set a secret which is needed to subscribe to the feed.
 
