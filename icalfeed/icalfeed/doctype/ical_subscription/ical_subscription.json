@@ -7,6 +7,8 @@
  "engine": "InnoDB",
  "field_order": [
   "secret",
+  "user",
+  "section_break_4",
   "documents"
  ],
  "fields": [
@@ -23,10 +25,21 @@
    "fieldtype": "Table",
    "label": "Documents",
    "options": "iCal Subscription Documents"
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_4",
+   "fieldtype": "Section Break"
   }
  ],
  "links": [],
- "modified": "2021-02-19 16:30:28.704761",
+ "modified": "2021-03-03 10:02:32.779228",
  "modified_by": "Administrator",
  "module": "iCalFeed",
  "name": "iCal Subscription",

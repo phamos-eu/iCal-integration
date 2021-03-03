@@ -23,6 +23,14 @@ def get_calendar(secret):
 								parent = %s""",(secret), as_dict=1)
 
 	if event_sub_list:
+		user = frappe.db.sql('''select
+						user
+					from
+						`tabiCal Subscription`
+					where
+						name = %s
+					''', (secret), as_list=1)
+
 		events = frappe.db.sql('''select
 						*
 					from
@@ -41,16 +49,27 @@ def get_calendar(secret):
 
 	# add events
 	for erp_event in events:
-		event = Event()
-		event.add('summary', erp_event['subject'])
-		event.add('dtstart', erp_event['starts_on'])
-		if erp_event['ends_on']:
-			event.add('dtend', erp_event['ends_on'])
-		event.add('dtstamp', erp_event['modified'])
-		event.add('description', erp_event['description'])
-		# add to calendar
-		cal.add_component(event)
-
+		if event_sub_list:
+			if erp_event['owner'] == user[0][0]:
+				event = Event()
+				event.add('summary', erp_event['subject'])
+				event.add('dtstart', erp_event['starts_on'])
+				if erp_event['ends_on']:
+					event.add('dtend', erp_event['ends_on'])
+				event.add('dtstamp', erp_event['modified'])
+				event.add('description', erp_event['description'])
+				# add to calendar
+				cal.add_component(event)
+		else:
+			event = Event()
+			event.add('summary', erp_event['subject'])
+			event.add('dtstart', erp_event['starts_on'])
+			if erp_event['ends_on']:
+				event.add('dtend', erp_event['ends_on'])
+			event.add('dtstamp', erp_event['modified'])
+			event.add('description', erp_event['description'])
+			# add to calendar
+			cal.add_component(event)
 	return cal
 
 @frappe.whitelist(allow_guest=True)
