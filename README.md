@@ -25,4 +25,4 @@ Tested in Thunderbird an Apples Calendar.
 
 #### License
 
-MIT
+GNU GPLv3
